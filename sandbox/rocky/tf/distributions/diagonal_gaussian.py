@@ -92,6 +92,12 @@ class DiagonalGaussian(Distribution):
         log_stds = dist_info["log_std"]
         return np.sum(log_stds + np.log(np.sqrt(2 * np.pi * np.e)), axis=-1)
 
+    def conditional(self, mask, dist_info):
+        assert len(mask) == self.dim
+        means = dist_info["mean"]
+        log_stds = dist_info["log_std"]
+        return dict(mean=means[mask], log_std=log_stds[mask])
+
     @property
     def dist_info_specs(self):
         return [("mean", (self.dim,)), ("log_std", (self.dim,))]
