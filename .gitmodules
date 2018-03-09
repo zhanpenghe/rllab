@@ -1,0 +1,3 @@
+[submodule "sandbox/embed2learn"]
+	path = sandbox/embed2learn
+	url = git@github.com:ryanjulian/embed2learn.git
