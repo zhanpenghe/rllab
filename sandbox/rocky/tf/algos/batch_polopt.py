@@ -91,8 +91,6 @@ class BatchPolopt(RLAlgorithm):
 
     def start_worker(self):
         self.sampler.start_worker()
-        if self.plot:
-            plotter.init_plot(self.env, self.policy)
 
     def shutdown_worker(self):
         self.sampler.shutdown_worker()
@@ -104,8 +102,13 @@ class BatchPolopt(RLAlgorithm):
         return self.sampler.process_samples(itr, paths)
 
     def train(self, sess=None):
+        created_session = True if (sess is None) else False
         if sess is None:
-            sess = tf.get_default_session()
+            sess = tf.Session()
+            sess.__enter__()
+
+        if self.plot:
+            plotter.init_plot(self.env, self.policy)
 
         sess.run(tf.global_variables_initializer())
         self.start_worker()
@@ -137,6 +140,8 @@ class BatchPolopt(RLAlgorithm):
                         input("Plotting evaluation run: Press Enter to "
                               "continue...")
         self.shutdown_worker()
+        if created_session:
+            sess.close()
 
     def log_diagnostics(self, paths):
         self.env.log_diagnostics(paths)
